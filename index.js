@@ -1,3 +1,4 @@
+let language = 'eng';
 const wrapper = document.createElement('div');
 wrapper.className = 'wrapper';
 const title = document.createElement('p');
@@ -5,12 +6,12 @@ title.className = 'title';
 title.textContent = 'Virtual Keyboard';
 const textarea = document.createElement('textarea');
 textarea.className = 'textarea';
-textarea.setAttribute('autofocus', true);
+// textarea.setAttribute('autofocus', true);
 const keyboard = document.createElement('div');
 keyboard.className = 'keyboard';
 const info = document.createElement('p');
 info.className = 'info';
-info.textContent = 'Создано в операционной системе MacOS.';
+info.textContent = 'Создано в операционной системе MacOS. Для смены языка нажмите левый Ctrl(control) + левый Alt(option)';
 const keysArray = [{ key: '`', code: 'Backquote' },
   { key: '1', code: 'Digit1' },
   { key: '2', code: 'Digit2' },
@@ -39,27 +40,28 @@ const keysArray = [{ key: '`', code: 'Backquote' },
   { key: '[', code: 'Brack etLeft' },
   { key: ']', code: 'BracketRight ' },
   { key: '\\', code: 'Backslash' },
+  { key: 'Delete', code: 'Delete' },
   { key: 'CapsLock', code: 'CapsLock' },
-  { key: 'A', code: 'KeyA' },
-  { key: 'S', code: 'KeyS' },
-  { key: 'D', code: 'KeyD' },
-  { key: 'F', code: 'KeyF' },
-  { key: 'G', code: 'KeyG' },
-  { key: 'H', code: 'KeyH' },
-  { key: 'J', code: 'KeyJ' },
-  { key: 'K', code: 'KeyK' },
-  { key: 'L', code: 'KeyL' },
+  { key: 'a', code: 'KeyA' },
+  { key: 's', code: 'KeyS' },
+  { key: 'd', code: 'KeyD' },
+  { key: 'f', code: 'KeyF' },
+  { key: 'g', code: 'KeyG' },
+  { key: 'h', code: 'KeyH' },
+  { key: 'j', code: 'KeyJ' },
+  { key: 'k', code: 'KeyK' },
+  { key: 'l', code: 'KeyL' },
   { key: ';', code: 'Semicolon' },
   { key: "'", code: 'Quote' },
   { key: 'Enter', code: 'Enter' },
   { key: 'Shift', code: 'ShiftLeft' },
-  { key: 'Z', code: 'KeyZ' },
-  { key: 'X', code: 'KeyX' },
-  { key: 'C', code: 'KeyC' },
-  { key: 'V', code: 'KeyV' },
-  { key: 'B', code: 'KeyB' },
-  { key: 'N', code: 'KeyN' },
-  { key: 'M', code: 'KeyM' },
+  { key: 'z', code: 'KeyZ' },
+  { key: 'x', code: 'KeyX' },
+  { key: 'c', code: 'KeyC' },
+  { key: 'v', code: 'KeyV' },
+  { key: 'b', code: 'KeyB' },
+  { key: 'n', code: 'KeyN' },
+  { key: 'm', code: 'KeyM' },
   { key: ',', code: 'Comma' },
   { key: '.', code: 'Period' },
   { key: '/', code: 'Slash' },
@@ -75,13 +77,13 @@ const keysArray = [{ key: '`', code: 'Backquote' },
   { key: 'ArrowDown', code: 'ArrowDown' },
   { key: 'ArrowRight', code: 'ArrowRight' }];
 
-// first row: 0-13, second row: 14-27, third row: 28-40, fourth row: 41-53, fifth row: 54-
+// first row: 0-13, second row: 14-28, third row: 29-41, fourth row: 42-54, fifth row: 55-
 
 class Key {
-  constructor(name) {
+  constructor(key, code) {
     this.markup = document.createElement('div');
-    this.markup.className = 'key';
-    this.markup.textContent = name;
+    this.markup.className = `key ${code}`;
+    this.markup.textContent = key;
   }
 }
 
@@ -89,19 +91,20 @@ function generateRow(minIndex, maxIndex, keyType) {
   const row = document.createElement('div');
   row.className = 'row';
   for (let i = minIndex; i <= maxIndex; i += 1) {
-    const key = new Key(keysArray[i][keyType]);
+    const key = new Key(keysArray[i][keyType], keysArray[i].code);
     row.append(key.markup);
   }
   return row;
 }
 
 function generateKeyboard() {
-  const keyType = 'key';
+  let keyType = 'key';
+  if (language === 'rus') keyType = 'key_rus';
   keyboard.append(generateRow(0, 13, keyType));
-  keyboard.append(generateRow(14, 27, keyType));
-  keyboard.append(generateRow(28, 40, keyType));
-  keyboard.append(generateRow(41, 53, keyType));
-  keyboard.append(generateRow(54, keysArray.length - 1, keyType));
+  keyboard.append(generateRow(14, 28, keyType));
+  keyboard.append(generateRow(29, 41, keyType));
+  keyboard.append(generateRow(42, 54, keyType));
+  keyboard.append(generateRow(55, keysArray.length - 1, keyType));
 }
 
 function generateDOM() {
@@ -115,7 +118,38 @@ function generateDOM() {
 
 generateDOM();
 
+const keyList = document.querySelectorAll('.key');
+
+function keyDownHandler(event) {
+  keyList.forEach((el) => {
+    if (el.classList.contains(event.code)) {
+      el.classList.add('active');
+      if (event.code === 'Backspace') {
+        textarea.textContent = textarea.textContent.slice(0, textarea.textContent.length - 1);
+      } else {
+        textarea.textContent += el.textContent;
+      }
+    }
+  });
+  window.addEventListener('keyup', (e) => {
+    keyList.forEach((el) => {
+      if (el.classList.contains(e.code)) {
+        el.classList.remove('active');
+      }
+    });
+  });
+}
+
+window.addEventListener('keydown', keyDownHandler);
+
 window.addEventListener('keydown', (event) => {
   console.log({ key: event.key, code: event.code });
-  if (event.ctrlKey && event.shiftKey) console.log('lang change');
+  // if (event.ctrlKey && event.shiftKey) console.log('lang change');
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey) {
+    if (language === 'eng') language = 'rus';
+    else language = 'eng';
+  }
 });
