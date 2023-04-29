@@ -119,13 +119,40 @@ function generateDOM() {
 generateDOM();
 
 const keyList = document.querySelectorAll('.key');
+let selectionStart;
+
+function slicer(string, direction) {
+  let result;
+  if (direction === 'Backspace') {
+    result = string.slice(0, selectionStart - 1)
+    + string.slice(selectionStart, textarea.textContent.length);
+  }
+  if (direction === 'Delete') {
+    result = string.slice(0, selectionStart)
+    + string.slice(selectionStart + 1, textarea.textContent.length);
+  }
+  return result;
+}
 
 function keyDownHandler(event) {
+  console.log(selectionStart);
+  event.preventDefault();
   keyList.forEach((el) => {
     if (el.classList.contains(event.code)) {
       el.classList.add('active');
       if (event.code === 'Backspace') {
-        textarea.textContent = textarea.textContent.slice(0, textarea.textContent.length - 1);
+        if (selectionStart) {
+          textarea.textContent = slicer(textarea.textContent, event.code);
+          selectionStart -= 1;
+          textarea.selectionStart = selectionStart;
+        } else {
+          textarea.textContent = textarea.textContent.slice(0, textarea.textContent.length - 1);
+        }
+      } else if (event.code === 'Delete') {
+        if (selectionStart) {
+          textarea.textContent = slicer(textarea.textContent, event.code);
+          textarea.selectionStart = selectionStart;
+        }
       } else {
         textarea.textContent += el.textContent;
       }
@@ -153,3 +180,9 @@ window.addEventListener('keydown', (event) => {
     else language = 'eng';
   }
 });
+
+function setSelectionStart() {
+  selectionStart = textarea.selectionStart;
+}
+
+textarea.addEventListener('click', setSelectionStart);
