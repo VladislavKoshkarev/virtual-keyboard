@@ -153,8 +153,21 @@ function keyDownHandler(event) {
           textarea.textContent = slicer(textarea.textContent, event.code);
           textarea.selectionStart = selectionStart;
         }
+      } else if (event.code === 'Enter') {
+        if (selectionStart) {
+          textarea.textContent = `${textarea.textContent.slice(0, selectionStart)}\n${textarea.textContent.slice(selectionStart, textarea.textContent.length)}`;
+          selectionStart += 1;
+          textarea.selectionStart = selectionStart;
+        } else textarea.textContent += '\n';
       } else {
-        textarea.textContent += el.textContent;
+        if (selectionStart) {
+          textarea.textContent = textarea.textContent.slice(0, selectionStart) + el.textContent
+          + textarea.textContent.slice(selectionStart, textarea.textContent.length);
+          selectionStart += 1;
+          textarea.selectionStart = selectionStart;
+        } else {
+          textarea.textContent += el.textContent;
+        }
       }
     }
   });
