@@ -175,7 +175,7 @@ function keyDownHandler(event) {
 window.addEventListener('keydown', keyDownHandler);
 
 window.addEventListener('keydown', (event) => {
-  console.log({ key: event.key, code: event.code });
+  console.log(event, { key: event.key, code: event.code });
   // if (event.ctrlKey && event.shiftKey) console.log('lang change');
 });
 
@@ -191,3 +191,28 @@ function setSelectionStart() {
 }
 
 textarea.addEventListener('click', setSelectionStart);
+
+function clickHandler(event) {
+  if (event.target.classList.contains('key')) {
+    let eventKey;
+    let eventCode;
+    keysArray.forEach((el) => {
+      if (el.code === event.target.classList[1]) {
+        eventKey = el.key;
+        eventCode = el.code;
+      }
+    });
+    const keyDownEvent = new KeyboardEvent('keydown', {
+      key: eventKey,
+      code: eventCode,
+    });
+    const keyUpEvent = new KeyboardEvent('keyup', {
+      key: eventKey,
+      code: eventCode,
+    });
+    keyDownHandler(keyDownEvent);
+    window.dispatchEvent(keyUpEvent);
+  }
+}
+
+document.querySelector('.keyboard').addEventListener('click', clickHandler);
