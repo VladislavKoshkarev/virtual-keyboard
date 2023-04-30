@@ -135,39 +135,27 @@ function slicer(string, direction) {
 }
 
 function keyDownHandler(event) {
-  console.log(selectionStart);
   event.preventDefault();
+  if (!selectionStart) selectionStart = textarea.textContent.length;
   keyList.forEach((el) => {
     if (el.classList.contains(event.code)) {
       el.classList.add('active');
       if (event.code === 'Backspace') {
-        if (selectionStart) {
-          textarea.textContent = slicer(textarea.textContent, event.code);
-          selectionStart -= 1;
-          textarea.selectionStart = selectionStart;
-        } else {
-          textarea.textContent = textarea.textContent.slice(0, textarea.textContent.length - 1);
-        }
+        textarea.textContent = slicer(textarea.textContent, event.code);
+        selectionStart -= 1;
+        textarea.selectionStart = selectionStart;
       } else if (event.code === 'Delete') {
-        if (selectionStart) {
-          textarea.textContent = slicer(textarea.textContent, event.code);
-          textarea.selectionStart = selectionStart;
-        }
+        textarea.textContent = slicer(textarea.textContent, event.code);
+        textarea.selectionStart = selectionStart;
       } else if (event.code === 'Enter') {
-        if (selectionStart) {
-          textarea.textContent = `${textarea.textContent.slice(0, selectionStart)}\n${textarea.textContent.slice(selectionStart, textarea.textContent.length)}`;
-          selectionStart += 1;
-          textarea.selectionStart = selectionStart;
-        } else textarea.textContent += '\n';
+        textarea.textContent = `${textarea.textContent.slice(0, selectionStart)}\n${textarea.textContent.slice(selectionStart, textarea.textContent.length)}`;
+        selectionStart += 1;
+        textarea.selectionStart = selectionStart;
       } else {
-        if (selectionStart) {
-          textarea.textContent = textarea.textContent.slice(0, selectionStart) + el.textContent
-          + textarea.textContent.slice(selectionStart, textarea.textContent.length);
-          selectionStart += 1;
-          textarea.selectionStart = selectionStart;
-        } else {
-          textarea.textContent += el.textContent;
-        }
+        textarea.textContent = textarea.textContent.slice(0, selectionStart) + el.textContent
+        + textarea.textContent.slice(selectionStart, textarea.textContent.length);
+        selectionStart += 1;
+        textarea.selectionStart = selectionStart;
       }
     }
   });
