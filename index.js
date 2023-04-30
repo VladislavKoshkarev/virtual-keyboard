@@ -65,7 +65,7 @@ const keysArray = [{ key: '`', code: 'Backquote' },
   { key: ',', code: 'Comma' },
   { key: '.', code: 'Period' },
   { key: '/', code: 'Slash' },
-  { key: 'ArrowUp', code: 'ArrowUp' },
+  { key: '↑', code: 'ArrowUp' },
   { key: 'Shift', code: 'ShiftRight' },
   { key: 'Control', code: 'ControlLeft' },
   { key: 'Alt', code: 'AltLeft' },
@@ -73,9 +73,9 @@ const keysArray = [{ key: '`', code: 'Backquote' },
   { key: ' ', code: 'Space' },
   { key: 'Meta', code: 'MetaRight' },
   { key: 'Alt', code: 'AltRight' },
-  { key: 'ArrowLeft', code: 'ArrowLeft' },
-  { key: 'ArrowDown', code: 'ArrowDown' },
-  { key: 'ArrowRight', code: 'ArrowRight' }];
+  { key: '←', code: 'ArrowLeft' },
+  { key: '↓', code: 'ArrowDown' },
+  { key: '→', code: 'ArrowRight' }];
 
 // first row: 0-13, second row: 14-28, third row: 29-41, fourth row: 42-54, fifth row: 55-
 
@@ -149,6 +149,10 @@ function keyDownHandler(event) {
         textarea.selectionStart = selectionStart;
       } else if (event.code === 'Enter') {
         textarea.textContent = `${textarea.textContent.slice(0, selectionStart)}\n${textarea.textContent.slice(selectionStart, textarea.textContent.length)}`;
+        selectionStart += 1;
+        textarea.selectionStart = selectionStart;
+      } else if (event.code === 'Tab') {
+        textarea.textContent += '\t';
         selectionStart += 1;
         textarea.selectionStart = selectionStart;
       } else {
