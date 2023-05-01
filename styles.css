@@ -1,0 +1,73 @@
+* {
+  transition: all .3s ease-in-out;
+  color: black;
+}
+
+.wrapper {
+  margin: 0 auto;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 2rem;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.keyboard {
+  padding: 5px;
+  border: 5px solid cornsilk;
+}
+
+.key {
+  background-color: cornsilk;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  border: 1px solid gray;
+  user-select: none;
+  border-radius: 5px;
+  text-align: center;
+  float: left;
+}
+
+.key div {
+  min-width: 50px;
+  min-height: 50px;
+}
+
+.key:hover {
+  background-color: rgb(245, 245, 144);
+}
+
+.active,
+.key:active {
+  background-color: rgb(139, 181, 178);
+  border: 1px solid black;
+}
+
+.textarea {
+  width: 100%;
+  height: 200px;
+}
+
+.keyboard .Backspace,
+.keyboard .CapsLock,
+.keyboard .Enter,
+.keyboard .ShiftLeft,
+.keyboard .ShiftRight
+{
+  width: 120px;
+}
+
+.keyboard .Space {
+  width: 410px;
+}
+
+.hide {
+  display: none;
+}
