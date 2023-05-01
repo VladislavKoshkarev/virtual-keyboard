@@ -8,15 +8,12 @@ title.className = 'title';
 title.textContent = 'Virtual Keyboard';
 const textarea = document.createElement('textarea');
 textarea.className = 'textarea';
-// textarea.setAttribute('autofocus', true);
 const keyboard = document.createElement('div');
 keyboard.className = 'keyboard';
 const info = document.createElement('p');
 info.className = 'info';
 info.textContent = 'Создано в операционной системе MacOS. Для смены языка нажмите левый Ctrl(control) + левый Alt(option)';
 let keysArray = eng;
-
-// first row: 0-13, second row: 14-28, third row: 29-41, fourth row: 42-54, fifth row: 55-
 
 class Key {
   constructor(keyObj) {
@@ -44,8 +41,6 @@ function generateRow(minIndex, maxIndex) {
 }
 
 function generateKeyboard(keyType = 'key') {
-  // const keyType = 'key';
-  // if (language === 'rus') keyType = 'key_rus';
   keyboard.append(generateRow(0, 13, keyType));
   keyboard.append(generateRow(14, 28, keyType));
   keyboard.append(generateRow(29, 41, keyType));
@@ -64,7 +59,6 @@ function generateDOM() {
 
 generateDOM();
 
-// const keyList = document.querySelectorAll('.key');
 let selectionStart;
 
 function slicer(string, direction) {
@@ -202,7 +196,6 @@ function keyDownHandler(event) {
           });
           window.addEventListener('keyup', (e) => {
             if (e.key === 'CapsLock') {
-              console.log(event);
               isCaps = false;
               if (isShift) {
                 keyList.forEach((key) => {
@@ -223,7 +216,6 @@ function keyDownHandler(event) {
           });
         }
       } else {
-        console.log(el.textContent);
         textarea.textContent = textarea.textContent.slice(0, selectionStart)
         + el.querySelector('div:not(.hide)').textContent
         + textarea.textContent.slice(selectionStart, textarea.textContent.length);
@@ -242,11 +234,6 @@ function keyDownHandler(event) {
 }
 
 window.addEventListener('keydown', keyDownHandler);
-
-window.addEventListener('keydown', (event) => {
-  console.log(event, { key: event.key, code: event.code });
-  // if (event.ctrlKey && event.shiftKey) console.log('lang change');
-});
 
 function languageChanger(event) {
   if (event.ctrlKey && event.altKey) {
