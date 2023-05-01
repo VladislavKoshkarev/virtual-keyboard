@@ -96,7 +96,7 @@ function keyDownHandler(event) {
         selectionStart += 1;
         textarea.selectionStart = selectionStart;
       } else if (event.code === 'Tab') {
-        textarea.textContent += '\t';
+        textarea.textContent = `${textarea.textContent.slice(0, selectionStart)}\t${textarea.textContent.slice(selectionStart, textarea.textContent.length)}`;
         selectionStart += 1;
         textarea.selectionStart = selectionStart;
       } else if (event.key === 'Control' || event.key === 'Alt' || event.key === 'Meta') {
