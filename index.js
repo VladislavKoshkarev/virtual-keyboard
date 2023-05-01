@@ -1,3 +1,5 @@
+import { eng, rus } from './keys.js';
+
 let language = 'eng';
 const wrapper = document.createElement('div');
 wrapper.className = 'wrapper';
@@ -12,7 +14,7 @@ keyboard.className = 'keyboard';
 const info = document.createElement('p');
 info.className = 'info';
 info.textContent = 'Создано в операционной системе MacOS. Для смены языка нажмите левый Ctrl(control) + левый Alt(option)';
-const keysArray = [{ key: '`', code: 'Backquote' },
+let keysArray = [{ key: '`', code: 'Backquote' },
   { key: '1', code: 'Digit1' },
   { key: '2', code: 'Digit2' },
   { key: '3', code: 'Digit3' },
@@ -98,8 +100,8 @@ function generateRow(minIndex, maxIndex, keyType) {
 }
 
 function generateKeyboard() {
-  let keyType = 'key';
-  if (language === 'rus') keyType = 'key_rus';
+  const keyType = 'key';
+  // if (language === 'rus') keyType = 'key_rus';
   keyboard.append(generateRow(0, 13, keyType));
   keyboard.append(generateRow(14, 28, keyType));
   keyboard.append(generateRow(29, 41, keyType));
@@ -110,7 +112,7 @@ function generateKeyboard() {
 function generateDOM() {
   wrapper.append(title);
   wrapper.append(textarea);
-  generateKeyboard();
+  // generateKeyboard();
   wrapper.append(keyboard);
   wrapper.append(info);
   document.body.append(wrapper);
@@ -118,7 +120,7 @@ function generateDOM() {
 
 generateDOM();
 
-const keyList = document.querySelectorAll('.key');
+// const keyList = document.querySelectorAll('.key');
 let selectionStart;
 
 function slicer(string, direction) {
@@ -135,6 +137,7 @@ function slicer(string, direction) {
 }
 
 function keyDownHandler(event) {
+  const keyList = document.querySelectorAll('.key');
   event.preventDefault();
   if (!selectionStart) selectionStart = textarea.textContent.length;
   keyList.forEach((el) => {
@@ -155,6 +158,10 @@ function keyDownHandler(event) {
         textarea.textContent += '\t';
         selectionStart += 1;
         textarea.selectionStart = selectionStart;
+      } else if (event.key === 'Control' || event.key === 'Alt' || event.key === 'Meta') {
+        textarea.textContent += '';
+      } else if (event.key === 'Shift') {
+        textarea.textContent += '';
       } else {
         textarea.textContent = textarea.textContent.slice(0, selectionStart) + el.textContent
         + textarea.textContent.slice(selectionStart, textarea.textContent.length);
@@ -179,12 +186,39 @@ window.addEventListener('keydown', (event) => {
   // if (event.ctrlKey && event.shiftKey) console.log('lang change');
 });
 
-window.addEventListener('keydown', (event) => {
+function languageChanger(event) {
   if (event.ctrlKey && event.altKey) {
-    if (language === 'eng') language = 'rus';
-    else language = 'eng';
+    if (language === 'eng') {
+      language = 'rus';
+      keysArray = rus;
+    } else {
+      language = 'eng';
+      keysArray = eng;
+    }
+    keyboard.innerHTML = '';
+    generateKeyboard();
   }
-});
+}
+
+window.addEventListener('keydown', languageChanger);
+
+function saveLanguage() {
+  localStorage.setItem('language', language);
+}
+
+function getLanguage() {
+  if (localStorage.getItem('language')) {
+    language = localStorage.getItem('language');
+    localStorage.removeItem('language');
+    if (language === 'eng') keysArray = eng;
+    else keysArray = rus;
+    keyboard.innerHTML = '';
+    generateKeyboard();
+  }
+}
+
+window.addEventListener('unload', saveLanguage);
+window.addEventListener('DOMContentLoaded', getLanguage);
 
 function setSelectionStart() {
   selectionStart = textarea.selectionStart;
@@ -215,4 +249,4 @@ function clickHandler(event) {
   }
 }
 
-document.querySelector('.keyboard').addEventListener('click', clickHandler);
+keyboard.addEventListener('click', clickHandler);
